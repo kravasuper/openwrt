@@ -8,9 +8,9 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=ath11k-firmware
-PKG_SOURCE_DATE:=2024-10-14
-PKG_SOURCE_VERSION:=15f050122da5ef5bef2cc8c7c19dfb7f98060a49
-PKG_MIRROR_HASH:=e7a89d1570f32552ade539376181494724b5eafb31d00451ff2dcf5a2922a0cb
+PKG_SOURCE_DATE:=2026-03-24
+PKG_SOURCE_VERSION:=2044a5b7e0da88a34c728a62e7f262b67c141739
+PKG_MIRROR_HASH:=281e3361ab20d3bcff78498dafaa3db9abce5440ea6bb20c83042812afd453e5
 PKG_RELEASE:=1
 
 PKG_SOURCE_PROTO:=git
@@ -58,6 +58,11 @@ $(Package/ath11k-firmware-default)
   TITLE:=IPQ6018 ath11k firmware
 endef
 
+define Package/ath11k-firmware-ipq9574
+$(Package/ath11k-firmware-default)
+  TITLE:=IPQ9574 ath11k firmware
+endef
+
 define Build/Clean
 	$(call Build/Clean/Default,)
 
@@ -93,5 +98,16 @@ define Package/ath11k-firmware-ipq6018/install
 		$(1)/lib/firmware/IPQ6018/
 endef
 
+define Package/ath11k-firmware-ipq9574/install
+	$(INSTALL_DIR) $(1)/lib/firmware/ath11k/IPQ9574/hw1.0
+	$(INSTALL_DATA) \
+		$(BUILD_DIR)/$(ATH11K_LEGACY_FW_SUBDIR)/ath11k-firmware/IPQ9574/hw1.0/2.11.0.1/WLAN.HK.2.11.0.1-01491-QCAHKSWPL_SILICONZ-1/*.* \
+		$(1)/lib/firmware/ath11k/IPQ9574/hw1.0/
+	$(INSTALL_DATA) \
+		$(PKG_BUILD_DIR)/IPQ9574/hw1.0/board-2.bin \
+		$(1)/lib/firmware/ath11k/IPQ9574/hw1.0/
+endef
+
 $(eval $(call BuildPackage,ath11k-firmware-ipq5018-qcn6122))
 $(eval $(call BuildPackage,ath11k-firmware-ipq6018))
+$(eval $(call BuildPackage,ath11k-firmware-ipq9574))

@@ -1,0 +1,41 @@
+Subject: net: phy: qca808x: fix QCA8084 XPCS channel lookup
+
+qca8084_qxgmii_set_speed() walks the XPCS channel table to find the
+entry matching the PHY channel. Use the loop index for that lookup
+instead of indexing the array by the requested channel on every
+iteration.
+
+Also keep the local variable declaration before executable statements in
+qca8084_link_change_notify().
+
+Signed-off-by: Igor Kravchenko <igor.kravchenko05@gmail.com>
+---
+ drivers/net/phy/qcom/qca8084_serdes.c | 2 +-
+ drivers/net/phy/qcom/qca808x.c        | 3 ++-
+ 2 files changed, 3 insertions(+), 2 deletions(-)
+
+--- a/drivers/net/phy/qcom/qca8084_serdes.c
++++ b/drivers/net/phy/qcom/qca8084_serdes.c
+@@ -680,7 +680,7 @@ void qca8084_qxgmii_set_speed(struct mdi
+ 	unsigned long rate;
+ 
+ 	for (i = 0; i < QCA8084_CHANNEL_MAX; i++) {
+-		xpcs_ch = &(xpcs_data->xpcs_ch[channel]);
++		xpcs_ch = &xpcs_data->xpcs_ch[i];
+ 		if (channel == xpcs_ch->ch_id)
+ 			break;
+ 	}
+--- a/drivers/net/phy/qcom/qca808x.c
++++ b/drivers/net/phy/qcom/qca808x.c
+@@ -1034,9 +1034,10 @@ static void qca8084_link_change_notify(s
+ 	 * 10G_QXGMII mode.
+ 	 */
+ 	if (phydev->interface == PHY_INTERFACE_MODE_10G_QXGMII) {
+-		shared_priv = phy_package_get_priv(phydev);
+ 		struct qca808x_priv *priv = phydev->priv;
+ 
++		shared_priv = phy_package_get_priv(phydev);
++
+ 		phy_modify_mmd(phydev, MDIO_MMD_AN, QCA8084_MMD7_IPG_OP,
+ 			       QCA8084_IPG_10_TO_11_EN,
+ 			       phydev->speed == SPEED_1000 ?

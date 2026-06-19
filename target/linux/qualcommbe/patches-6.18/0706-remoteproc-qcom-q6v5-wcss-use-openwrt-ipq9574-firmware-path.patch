@@ -1,0 +1,25 @@
+Subject: remoteproc: qcom_q6v5_wcss: use OpenWrt IPQ9574 firmware path
+
+OpenWrt installs IPQ9574 ath11k firmware under
+ath11k/IPQ9574/hw1.0/. Point the IPQ9574 WCSS remoteproc firmware names
+there so the built-in remoteproc loader can find q6_fw.mdt and
+m3_fw.mdt from the ath11k-firmware-ipq9574 package.
+
+Signed-off-by: Igor Kravchenko <igor.kravchenko05@gmail.com>
+---
+ drivers/remoteproc/qcom_q6v5_wcss.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+--- a/drivers/remoteproc/qcom_q6v5_wcss.c
++++ b/drivers/remoteproc/qcom_q6v5_wcss.c
+@@ -1334,8 +1334,8 @@ static const struct wcss_data wcss_ipq80
+ };
+ 
+ static const struct wcss_data wcss_ipq9574_res_init = {
+-	.q6_firmware_name = "IPQ9574/q6_fw.mdt",
+-	.m3_firmware_name = "IPQ9574/m3_fw.mdt",
++	.q6_firmware_name = "ath11k/IPQ9574/hw1.0/q6_fw.mdt",
++	.m3_firmware_name = "ath11k/IPQ9574/hw1.0/m3_fw.mdt",
+ 	.version = WCSS_IPQ9574,
+ 	.crash_reason_smem = WCSS_CRASH_REASON,
+ 	.aon_reset_required = true,
