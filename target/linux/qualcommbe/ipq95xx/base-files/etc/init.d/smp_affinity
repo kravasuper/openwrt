@@ -42,16 +42,15 @@ enable_affinity_ipq95xx()
 {
 	local ring cpu
 
-	# EDMA RX descriptor rings.
+	# IPQ9574 EDMA RX descriptor rings.
 	set_affinity 'rxdesc_20$' 0
 	set_affinity 'rxdesc_21$' 1
 	set_affinity 'rxdesc_22$' 2
 	set_affinity 'rxdesc_23$' 3
 
-	# EDMA TX completion rings. The stock BE7000 firmware balances the full
-	# configured txcmpl_4..31 range over all four Cortex-A73 cores.
-	for ring in $(seq 4 31); do
-		cpu=$(( (ring - 4) % 4 ))
+	# IPQ9574 EDMA TX completion rings are exposed as txcmpl_8..31.
+	for ring in $(seq 8 31); do
+		cpu=$(( (ring - 8) % 4 ))
 		set_affinity "txcmpl_${ring}$" "$cpu"
 	done
 

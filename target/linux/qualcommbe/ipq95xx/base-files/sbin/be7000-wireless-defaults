@@ -33,10 +33,10 @@ apply_defaults()
 	uci -q batch <<-EOF
 		set wireless.radio0.channel='auto'
 		set wireless.radio0.htmode='HE40'
-		set wireless.default_radio0.ssid='BE7000-2G'
+		set wireless.default_radio0.ssid='BE7000'
 		set wireless.radio1.channel='auto'
 		set wireless.radio1.htmode='EHT80'
-		set wireless.default_radio1.ssid='BE7000-5G'
+		set wireless.default_radio1.ssid='BE7000_5G'
 		commit wireless
 	EOF
 

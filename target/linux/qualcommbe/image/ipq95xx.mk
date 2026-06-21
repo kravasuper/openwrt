@@ -65,11 +65,13 @@ define Device/xiaomi_be7000
 	SOC := ipq9574
 	KERNEL_SIZE := 6096k
 	IMAGE_SIZE := 32116k
-	DEVICE_PACKAGES := kmod-ath11k-ahb ath11k-firmware-ipq9574 \
+	DEVICE_PACKAGES := ath11k-firmware-ipq9574 \
 					kmod-ath12k ath12k-firmware-qcn9274 \
 					kmod-qrtr-smd \
 					kmod-usb-storage be7000-nfc-i2ctransfer \
-					iperf3 ethtool-full uboot-envtools
+					luci luci-app-be7000-nfc luci-proto-wireguard \
+					iperf3 ethtool-full mdio-tools qrencode uboot-envtools \
+					kmod-wireguard wireguard-tools
 	IMAGE/factory.ubi := be7000-append-ubi
 	IMAGE/sysupgrade.bin := be7000-append-ubi | append-metadata
 endef

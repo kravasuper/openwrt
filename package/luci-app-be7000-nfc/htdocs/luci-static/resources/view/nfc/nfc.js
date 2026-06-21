@@ -10,10 +10,16 @@ var nfcEnable;
 var nfcMode;
 var nfcUrl;
 
+function normalizeNfcUrl(url) {
+	url = (url || '').trim();
+
+	return url || 'auto';
+}
+
 function readNfcForm() {
 	var enabled = nfcEnable.formvalue('nfc');
 	var mode = nfcMode.formvalue('nfc') || 'url';
-	var url = nfcUrl.formvalue('nfc') || 'auto';
+	var url = normalizeNfcUrl(nfcUrl.formvalue('nfc'));
 
 	return {
 		enabled: enabled == '1',
@@ -68,9 +74,34 @@ return view.extend({
 		nfcMode = o;
 
 		o = s.option(form.Value, 'url', _('URL'));
-		o.placeholder = 'auto';
-		o.default = 'auto';
+		o.placeholder = 'https://192.168.1.1/';
+		o.default = '';
+		o.rmempty = true;
 		o.depends('mode', 'url');
+		o.load = function(section_id) {
+			var value = this.map.data.get(this.map.config, section_id, this.option);
+
+			return value == 'auto' ? '' : value;
+		};
+		o.write = function(section_id, value) {
+			value = normalizeNfcUrl(value);
+
+			return this.map.data.set(this.map.config, section_id, this.option, value);
+		};
+		o.remove = function(section_id) {
+			return this.map.data.set(this.map.config, section_id, this.option, 'auto');
+		};
+		o.validate = function(section_id, value) {
+			value = (value || '').trim();
+
+			if (value == '')
+				return true;
+
+			if (!value.match(/^https?:\/\/[^\/\s?#]+(?:[\/?#][^\s]*)?$/i))
+				return _('Enter a valid http:// or https:// URL.');
+
+			return true;
+		};
 		nfcUrl = o;
 
 		o = s.option(form.Button, '_write', _('Write tag'));
