@@ -28,8 +28,65 @@ wait_for_radios()
 	done
 }
 
+bdata_get()
+{
+	local key="$1"
+	local part
+	local value
+
+	if command -v fw_printsys >/dev/null 2>&1 && [ -s /etc/fw_sys.config ]; then
+		value="$(fw_printsys -n "$key" 2>/dev/null)"
+		[ -n "$value" ] && {
+			echo "$value"
+			return
+		}
+	fi
+
+	part="$(find_mtd_part bdata)"
+	[ -n "$part" ] || return
+
+	strings "$part" 2>/dev/null | sed -n "s/^${key}=//p" | head -n 1
+}
+
+region_to_country()
+{
+	local region
+
+	region="$(printf "%s" "$1" | tr '[:lower:]' '[:upper:]')"
+
+	case "$region" in
+	EU|DE)
+		echo "DE"
+		;;
+	UK)
+		echo "GB"
+		;;
+	AS)
+		echo "MY"
+		;;
+	US)
+		echo "MX"
+		;;
+	CN|ID|IN|JP|KR|RU|SG)
+		echo "$region"
+		;;
+	[A-Z][A-Z])
+		echo "$region"
+		;;
+	esac
+}
+
+get_country()
+{
+	region_to_country "$(bdata_get region)"
+}
+
 apply_defaults()
 {
+	local country
+
+	country="$(get_country)"
+
 	uci -q batch <<-EOF
 		set wireless.radio0.channel='auto'
 		set wireless.radio0.htmode='HE40'
@@ -37,9 +94,14 @@ apply_defaults()
 		set wireless.radio1.channel='auto'
 		set wireless.radio1.htmode='EHT80'
 		set wireless.default_radio1.ssid='BE7000_5G'
-		commit wireless
 	EOF
 
+	if [ -n "$country" ]; then
+		uci -q set wireless.radio0.country="$country"
+		uci -q set wireless.radio1.country="$country"
+	fi
+
+	uci -q commit wireless
 	touch "$MARKER"
 }
 

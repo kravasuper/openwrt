@@ -24,8 +24,14 @@ boot() {
 
 	[ -x /usr/sbin/fw_setenv ] || return 0
 
-	[ -e /etc/fw_env.config ] ||
-		echo "/dev/mtd17 0x0 0x10000 0x20000" > /etc/fw_env.config
+	if [ ! -e /etc/fw_env.config ]; then
+		local mtdnum
+
+		mtdnum="$(find_mtd_index "0:appsblenv")"
+		[ -n "$mtdnum" ] || return 0
+
+		echo "/dev/mtd$mtdnum 0x0 0x10000 0x20000" > /etc/fw_env.config
+	fi
 
 	case "$(sed -n 's/.*ubi.mtd=\([^ ]*\).*/\1/p' /proc/cmdline)" in
 	rootfs_1)

@@ -6,10 +6,12 @@ RAMFS_COPY_DATA='/etc/fw_env.config /var/lock/fw_printenv.lock'
 
 be7000_do_upgrade() {
 	local image="$1"
+	local mtdnum
 	local target_slot=1
 	local target_part="rootfs_1"
 
-	if ! find_mtd_part "$target_part" >/dev/null; then
+	mtdnum="$(find_mtd_index "$target_part")"
+	if [ -z "$mtdnum" ]; then
 		echo "Unable to find target partition $target_part"
 		return 1
 	fi
@@ -22,6 +24,8 @@ be7000_do_upgrade() {
 	echo "Writing OpenWrt image to Xiaomi OpenWrt UBI slot $target_part"
 	CI_UBIPART="$target_part"
 	CI_ROOTPART="ubi_rootfs"
+	nand_detach_ubi "$target_part" || return 1
+	ubiformat "/dev/mtd$mtdnum" -y || return 1
 	nand_do_flash_file "$image" "fwtool -q -i /tmp/sysupgrade.meta -T $image" || return 1
 
 	echo "Switching Xiaomi boot slot to $target_slot"

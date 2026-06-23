@@ -7,8 +7,8 @@ a smaller post-boot clock set before ath11k can obtain its remoteproc.
 Signed-off-by: Alexandru Gagniuc <mr.nuke.me@gmail.com>
 Signed-off-by: Igor Kravchenko <igor.kravchenko05@gmail.com>
 ---
- drivers/clk/qcom/gcc-ipq9574.c | 378 +++++++++++++++++++++++++++++++++
- 1 file changed, 378 insertions(+)
+ drivers/clk/qcom/gcc-ipq9574.c | 380 +++++++++++++++++++++++++++++++++
+ 1 file changed, 380 insertions(+)
 
 diff --git a/drivers/clk/qcom/gcc-ipq9574.c b/drivers/clk/qcom/gcc-ipq9574.c
 index 6dc86e686de4..aef5ed5cd9f5 100644
@@ -111,16 +111,16 @@ index 6dc86e686de4..aef5ed5cd9f5 100644
 +	},
 +};
 +
-+
 +static struct clk_branch gcc_wcss_ahb_s_clk = {
 +	.halt_reg = 0x25060,
 +	.clkr = {
 +		.enable_reg = 0x25060,
 +		.enable_mask = BIT(0),
-+		.hw.init = &(struct clk_init_data) {
++		.hw.init = &(const struct clk_init_data) {
 +			.name = "gcc_wcss_ahb_s_clk",
 +			.parent_hws = (const struct clk_hw *[]) {
-+					&wcss_ahb_clk_src.clkr.hw },
++				&wcss_ahb_clk_src.clkr.hw
++			},
 +			.num_parents = 1,
 +			.flags = CLK_SET_RATE_PARENT,
 +			.ops = &clk_branch2_ops,
@@ -148,7 +148,7 @@ index 6dc86e686de4..aef5ed5cd9f5 100644
  static const struct freq_tbl ftbl_wcss_axi_m_clk_src[] = {
  	F(24000000, P_XO, 1, 0, 0),
  	F(133333333, P_GPLL0, 6, 0, 0),
-@@ -2749,6 +2869,39 @@ static struct clk_rcg2 wcss_axi_m_clk_src = {
+@@ -2749,6 +2869,40 @@ static struct clk_rcg2 wcss_axi_m_clk_src = {
  	},
  };
  
@@ -157,10 +157,11 @@ index 6dc86e686de4..aef5ed5cd9f5 100644
 +	.clkr = {
 +		.enable_reg = 0x25064,
 +		.enable_mask = BIT(0),
-+		.hw.init = &(struct clk_init_data) {
++		.hw.init = &(const struct clk_init_data) {
 +			.name = "gcc_wcss_axi_m_clk",
 +			.parent_hws = (const struct clk_hw *[]) {
-+					&wcss_axi_m_clk_src.clkr.hw },
++				&wcss_axi_m_clk_src.clkr.hw
++			},
 +			.num_parents = 1,
 +			.flags = CLK_SET_RATE_PARENT,
 +			.ops = &clk_branch2_ops,
@@ -404,7 +405,7 @@ index 6dc86e686de4..aef5ed5cd9f5 100644
  static const struct freq_tbl ftbl_q6_axim2_clk_src[] = {
  	F(342857143, P_GPLL4, 3.5, 0, 0),
  	{ }
-@@ -3323,6 +3664,22 @@ static struct clk_rcg2 q6_axim2_clk_src = {
+@@ -3323,6 +3664,23 @@ static struct clk_rcg2 q6_axim2_clk_src = {
  	},
  };
  
@@ -413,10 +414,11 @@ index 6dc86e686de4..aef5ed5cd9f5 100644
 +	.clkr = {
 +		.enable_reg = 0x25010,
 +		.enable_mask = BIT(0),
-+		.hw.init = &(struct clk_init_data) {
++		.hw.init = &(const struct clk_init_data) {
 +			.name = "gcc_q6_axim2_clk",
 +			.parent_hws = (const struct clk_hw *[]) {
-+					&q6_axim2_clk_src.clkr.hw },
++				&q6_axim2_clk_src.clkr.hw
++			},
 +			.num_parents = 1,
 +			.flags = CLK_SET_RATE_PARENT,
 +			.ops = &clk_branch2_ops,

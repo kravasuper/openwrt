@@ -73,7 +73,6 @@ define Device/xiaomi_be7000
 					iperf3 ethtool-full mdio-tools qrencode uboot-envtools \
 					kmod-wireguard wireguard-tools
 	IMAGE/factory.ubi := be7000-append-ubi
-	IMAGE/sysupgrade.bin := be7000-append-ubi | append-metadata
 endef
 TARGET_DEVICES += xiaomi_be7000
 
