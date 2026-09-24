@@ -980,3 +980,21 @@
 &pcs2 {
 	status = "disabled";
 };
+
+/* Stock single-phy 5 GHz RF routing (TLMM6 low / TLMM7 high).
+ * Without this the 5 GHz radio has severely weak reception. */
+&tlmm {
+	wifi-5g-rf-select0-hog {
+		gpio-hog;
+		gpios = <6 GPIO_ACTIVE_HIGH>;
+		output-low;
+		line-name = "wifi-5g-rf-select0";
+	};
+
+	wifi-5g-rf-select1-hog {
+		gpio-hog;
+		gpios = <7 GPIO_ACTIVE_HIGH>;
+		output-high;
+		line-name = "wifi-5g-rf-select1";
+	};
+};
